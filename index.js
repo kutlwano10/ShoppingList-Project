@@ -87,18 +87,27 @@ function showItemToShoppingList(item) { //then we to give it a parameter
 */
 
 onValue(shoppingListInDB, function(snapshot){
-    let itemsArray = Object.entries(snapshot.val()) //we can use keys,values & entries
-    
-    clearShoppingList()
-    for (let i = 0; i < itemsArray.length; i++) {
+    //i had to put the for loop inside an if statement because when we had to delete the last product on the list it was givin us null.
 
-        let currentItem = itemsArray[i] //stored the arrays of items in currentItem var.
-        let currentItemID = currentItem[0] //we access the ID of the items
-        let currentItemValue = currentItem[1] //we access their values
+    if (snapshot.exists()) {
+        let itemsArray = Object.entries(snapshot.val()) //we can use keys,values & entries
+    
+        clearShoppingList()
+        for (let i = 0; i < itemsArray.length; i++) {
+    
+            let currentItem = itemsArray[i] //stored the arrays of items in currentItem var.
+            let currentItemID = currentItem[0] //we access the ID of the items
+            let currentItemValue = currentItem[1] //we access their values
+            
+            showItemToShoppingList(currentItem) /*Bug: the items where doubling cause we had 
+                                                    had the same code running at the addbutton() */
+        } 
+
         
-        showItemToShoppingList(currentItem) /*Bug: the items where doubling cause we had 
-                                                had the same code running at the addbutton() */
+    } else {
+        shoppingList.innerHTML = "No Items"
     }
+
 })
 
 function clearShoppingList() {
