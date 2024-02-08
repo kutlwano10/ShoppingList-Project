@@ -6,7 +6,7 @@
     for data.
 */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"
-import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
 /* 
     This is our Project That all This data will be stored in.
 */
@@ -51,8 +51,27 @@ addButton.addEventListener("click", function() {
 function clearInputValue() {
     inputField.value = "" //clear the previous product entered
 }
-function showItemToShoppingList(itemValue) { //then we to give it a parameter 
-    shoppingList.innerHTML += `<li>${itemValue}</li>`
+function showItemToShoppingList(item) { //then we to give it a parameter 
+    // shoppingList.innerHTML += `<li>${itemValue}</li>`
+
+    // This is the other way of Doing since the previous 1 is limiting us since the list is not hardcoded in the html.
+    let itemID = item[0] 
+    let itemValue = item[1]
+
+    let newLi = document.createElement("li") //we can create any element here.
+    newLi.textContent = itemValue //itemValue all the named items
+
+    // This code we use it to remove unwanted item from the database and list 
+    newLi.addEventListener("click", function() {
+        //taking ref from our project so that when item clicked it must be deleted
+    let exactLocationOfItemInDB = ref(database, `shoppingList/${itemID}`)
+    //This function removes items when clicked
+    remove(exactLocationOfItemInDB)
+    })
+
+    shoppingList.append(newLi) //
+    
+
 }
 
 //FETCHING DATA FROM FIREBASE TO DISPLAY IN OUR APP
@@ -64,15 +83,20 @@ function showItemToShoppingList(itemValue) { //then we to give it a parameter
     -Make sure you convert object.value to snapshot.val() this will make our object to be a 
     an array. We want an array not object
     -then we can create a for loop 
-    -use showItemToShoppingList(itemValue) to show your data on html on the loop
+    -use showItemToShoppingList(itemValue) to show your data on html on the loop.
 */
 
 onValue(shoppingListInDB, function(snapshot){
-    let itemsArray = Object.values(snapshot.val())
+    let itemsArray = Object.entries(snapshot.val()) //we can use keys,values & entries
     
     clearShoppingList()
     for (let i = 0; i < itemsArray.length; i++) {
-        showItemToShoppingList(itemsArray[i]) /*Bug: the items where doubling cause we had 
+
+        let currentItem = itemsArray[i] //stored the arrays of items in currentItem var.
+        let currentItemID = currentItem[0] //we access the ID of the items
+        let currentItemValue = currentItem[1] //we access their values
+        
+        showItemToShoppingList(currentItem) /*Bug: the items where doubling cause we had 
                                                 had the same code running at the addbutton() */
     }
 })
