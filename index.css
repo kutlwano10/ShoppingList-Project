@@ -3,6 +3,7 @@ html, body {
     padding: 0;
     font-family: 'Rubik', sans-serif;
     background-color: #EEF0F4;
+    user-select: none; /*You cant select anything thats not a pointer*/
 }
 
 .container {
@@ -10,6 +11,8 @@ html, body {
     flex-direction: column;
     max-width: 320px;
     margin: 30px auto;
+    
+
 }
 
 img {
@@ -38,7 +41,12 @@ button {
     font-size: 20px;
     text-align: center;
     font-family: 'Rubik', sans-serif;
+    cursor: pointer;
      
+}
+
+button:hover {
+    background: #6b0092;
 }
 
 ul{
@@ -58,5 +66,10 @@ ul li {
     border-radius: 8px;
     flex-grow: 1;/* fills in the spaces left*/
     text-align: center;
+    cursor: pointer;
     
+}
+
+ul li:hover {
+    background: #a7b5d2;
 }
